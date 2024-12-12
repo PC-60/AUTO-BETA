@@ -46,13 +46,6 @@
             border-color: #555;
         }
 
-        .buttons-container {
-            margin: 10px 0;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
         button {
             padding: 10px 20px;
             font-size: 16px;
@@ -64,13 +57,13 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
+        button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+
         button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
-        }
-
-        button:hover:not(:disabled) {
-            background-color: #45a049;
         }
 
         .output-container {
@@ -89,7 +82,6 @@
             background-color: #e8f5e9;
             overflow-y: auto;
             resize: none;
-            transition: background-color 0.3s, color 0.3s;
         }
 
         .chunk-navigation {
@@ -120,7 +112,7 @@
     </style>
 </head>
 <body>
-    <h1>AUTO BETA</h1>
+    <h1>Split Text with Spacing</h1>
     <textarea id="inputText" placeholder="Enter your text here..."></textarea>
     <button onclick="splitTextWithSpacing()">Split Text with Spacing</button>
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
@@ -132,12 +124,27 @@
         let currentChunkIndex = 0;
 
         function splitTextWithSpacing() {
-            const inputText = document.getElementById('inputText').value.trim();
+            let inputText = document.getElementById('inputText').value.trim();
+
+            // Replace continuous dots with two dots, and remove underscores
+            inputText = inputText.replace(/\.{3,}/g, '.'); // Replace continuous dots with two dots
+            inputText = inputText.replace(/_+/g, ''); // Remove underscores
+            inputText = inputText.replace(/\s+_/g, ''); // Remove trailing underscores
+
             const chunkSize = 7600;
             chunks = [];
 
-            for (let i = 0; i < inputText.length; i += chunkSize) {
-                chunks.push(inputText.slice(i, i + chunkSize));
+            let currentPosition = 0;
+            while (currentPosition < inputText.length) {
+                let nextChunkEnd = currentPosition + chunkSize;
+
+                if (nextChunkEnd < inputText.length) {
+                    let lastSpace = inputText.lastIndexOf(' ', nextChunkEnd);
+                    nextChunkEnd = lastSpace > currentPosition ? lastSpace : nextChunkEnd;
+                }
+
+                chunks.push(inputText.slice(currentPosition, nextChunkEnd).trim());
+                currentPosition = nextChunkEnd;
             }
 
             if (chunks.length > 0) {
