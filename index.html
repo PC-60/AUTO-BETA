@@ -30,7 +30,7 @@
 
         textarea {
             width: 80%;
-            height: 200px;
+            height: 1500%;
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
@@ -73,7 +73,7 @@
 
         .output-container textarea {
             width: 100%;
-            height: 1500%;
+            height: 150px;
             margin-bottom: 10px;
             padding: 10px;
             font-size: 14px;
@@ -109,6 +109,13 @@
             background-color: #555;
             color: white;
         }
+
+        #debug-info {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -118,6 +125,7 @@
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
 
     <div class="output-container" id="outputContainer"></div>
+    <div id="debug-info"></div>
 
     <script>
         let chunks = [];
@@ -126,8 +134,8 @@
         function splitTextWithSpacing() {
             let inputText = document.getElementById('inputText').value.trim();
 
-            // Replace continuous dots with two dots, and remove underscores
-            inputText = inputText.replace(/\.{3,}/g, '.'); // Replace continuous dots with two dots
+            // Replace continuous dots with a single dot, and remove underscores
+            inputText = inputText.replace(/\.{3,}/g, '.'); // Replace continuous dots
             inputText = inputText.replace(/_+/g, ''); // Remove underscores
             inputText = inputText.replace(/\s+_/g, ''); // Remove trailing underscores
 
@@ -146,9 +154,6 @@
                 chunks.push(inputText.slice(currentPosition, nextChunkEnd).trim());
                 currentPosition = nextChunkEnd;
             }
-
-            // Log all chunks to the console
-            console.log("All Chunks:", chunks);
 
             if (chunks.length > 0) {
                 currentChunkIndex = 0;
@@ -183,6 +188,8 @@
                 copyButton.textContent = 'Copy Chunk';
                 copyButton.onclick = () => {
                     copyChunkToClipboard(chunks[currentChunkIndex]);
+                    copyButton.style.backgroundColor = 'yellow';
+                    copyButton.style.color = 'black';
                 };
 
                 const nextButton = document.createElement('button');
@@ -207,8 +214,8 @@
                 outputContainer.appendChild(chunkInfo);
                 outputContainer.appendChild(navigationDiv);
 
-                // Log the currently displayed chunk to the console
-                console.log(`Displaying Chunk ${currentChunkIndex + 1}:`, chunks[currentChunkIndex]);
+                // Update debug info
+                document.getElementById('debug-info').textContent = `Debug: Chunk ${currentChunkIndex + 1} of ${chunks.length}`;
             }
         }
 
@@ -219,7 +226,6 @@
             tempTextarea.select();
             document.execCommand('copy');
             document.body.removeChild(tempTextarea);
-            console.log("Copied to Clipboard:", chunk);
         }
 
         function toggleDarkMode() {
