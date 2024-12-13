@@ -30,7 +30,7 @@
 
         textarea {
             width: 80%;
-            height: 1500%;
+            height: 200px;
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
@@ -71,28 +71,14 @@
             margin: 20px 0;
         }
 
-        .output-container textarea {
-            width: 100%;
-            height: 150px;
-            margin-bottom: 10px;
+        .output-container p {
             padding: 10px;
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 4px;
             background-color: #e8f5e9;
-            overflow-y: auto;
-            resize: none;
-        }
-
-        .chunk-navigation {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .chunk-info {
-            font-weight: bold;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
         }
 
         .dark-mode-toggle {
@@ -109,13 +95,6 @@
             background-color: #555;
             color: white;
         }
-
-        #debug-info {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #888;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -125,24 +104,19 @@
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
 
     <div class="output-container" id="outputContainer"></div>
-    <div id="debug-info"></div>
 
     <script>
-        let chunks = [];
-        let currentChunkIndex = 0;
-
         function splitTextWithSpacing() {
             let inputText = document.getElementById('inputText').value.trim();
 
-            // Replace continuous dots with a single dot, and remove underscores
-            inputText = inputText.replace(/\.{3,}/g, '.'); // Replace continuous dots
-            inputText = inputText.replace(/_+/g, ''); // Remove underscores
-            inputText = inputText.replace(/\s+_/g, ''); // Remove trailing underscores
+            // Replace continuous dots with single dot, and remove underscores
+            inputText = inputText.replace(/\.{3,}/g, '.');
+            inputText = inputText.replace(/_+/g, '');
 
             const chunkSize = 7600;
-            chunks = [];
-
+            const chunks = [];
             let currentPosition = 0;
+
             while (currentPosition < inputText.length) {
                 let nextChunkEnd = currentPosition + chunkSize;
 
@@ -155,77 +129,18 @@
                 currentPosition = nextChunkEnd;
             }
 
-            if (chunks.length > 0) {
-                currentChunkIndex = 0;
-                displayCurrentChunk();
-            }
+            displayChunksAsParagraphs(chunks);
         }
 
-        function displayCurrentChunk() {
+        function displayChunksAsParagraphs(chunks) {
             const outputContainer = document.getElementById('outputContainer');
             outputContainer.innerHTML = '';
 
-            if (chunks.length > 0) {
-                const chunkText = document.createElement('textarea');
-                chunkText.readOnly = false;
-                chunkText.value = chunks[currentChunkIndex];
-                chunkText.className = 'output-container-textarea';
-
-                const navigationDiv = document.createElement('div');
-                navigationDiv.classList.add('chunk-navigation');
-
-                const prevButton = document.createElement('button');
-                prevButton.textContent = 'Previous';
-                prevButton.disabled = currentChunkIndex === 0;
-                prevButton.onclick = () => {
-                    if (currentChunkIndex > 0) {
-                        currentChunkIndex--;
-                        displayCurrentChunk();
-                    }
-                };
-
-                const copyButton = document.createElement('button');
-                copyButton.textContent = 'Copy Chunk';
-                copyButton.onclick = () => {
-                    copyChunkToClipboard(chunks[currentChunkIndex]);
-                    copyButton.style.backgroundColor = 'yellow';
-                    copyButton.style.color = 'black';
-                };
-
-                const nextButton = document.createElement('button');
-                nextButton.textContent = 'Next';
-                nextButton.disabled = currentChunkIndex === chunks.length - 1;
-                nextButton.onclick = () => {
-                    if (currentChunkIndex < chunks.length - 1) {
-                        currentChunkIndex++;
-                        displayCurrentChunk();
-                    }
-                };
-
-                const chunkInfo = document.createElement('div');
-                chunkInfo.className = 'chunk-info';
-                chunkInfo.textContent = `Chunk ${currentChunkIndex + 1} of ${chunks.length}`;
-
-                navigationDiv.appendChild(prevButton);
-                navigationDiv.appendChild(copyButton);
-                navigationDiv.appendChild(nextButton);
-
-                outputContainer.appendChild(chunkText);
-                outputContainer.appendChild(chunkInfo);
-                outputContainer.appendChild(navigationDiv);
-
-                // Update debug info
-                document.getElementById('debug-info').textContent = `Debug: Chunk ${currentChunkIndex + 1} of ${chunks.length}`;
-            }
-        }
-
-        function copyChunkToClipboard(chunk) {
-            const tempTextarea = document.createElement('textarea');
-            tempTextarea.value = chunk;
-            document.body.appendChild(tempTextarea);
-            tempTextarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempTextarea);
+            chunks.forEach(chunk => {
+                const paragraph = document.createElement('p');
+                paragraph.textContent = chunk;
+                outputContainer.appendChild(paragraph);
+            });
         }
 
         function toggleDarkMode() {
