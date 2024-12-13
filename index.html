@@ -30,13 +30,13 @@
 
         textarea {
             width: 80%;
-            height: 100%;
+            height: 200px;
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            resize: both;
+            resize: none;
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -68,20 +68,45 @@
 
         .output-container {
             width: 80%;
-            height: 1500%;
             margin: 20px 0;
-            
         }
 
         .output-container p {
             padding: 10px;
-           
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 4px;
             background-color: #e8f5e9;
             margin-bottom: 10px;
             white-space: pre-wrap;
+        }
+
+        .chunk-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .chunk-navigation button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .chunk-navigation button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .chunk-info {
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
         }
 
         .dark-mode-toggle {
@@ -109,6 +134,9 @@
     <div class="output-container" id="outputContainer"></div>
 
     <script>
+        let chunks = [];
+        let currentChunkIndex = 0;
+
         function splitTextWithSpacing() {
             let inputText = document.getElementById('inputText').value.trim();
 
@@ -117,7 +145,7 @@
             inputText = inputText.replace(/_+/g, '');
 
             const chunkSize = 7600;
-            const chunks = [];
+            chunks = [];
             let currentPosition = 0;
 
             while (currentPosition < inputText.length) {
@@ -132,18 +160,70 @@
                 currentPosition = nextChunkEnd;
             }
 
-            displayChunksAsParagraphs(chunks);
+            if (chunks.length > 0) {
+                currentChunkIndex = 0;
+                displayCurrentChunk();
+            }
         }
 
-        function displayChunksAsParagraphs(chunks) {
+        function displayCurrentChunk() {
             const outputContainer = document.getElementById('outputContainer');
             outputContainer.innerHTML = '';
 
-            chunks.forEach(chunk => {
-                const paragraph = document.createElement('p');
-                paragraph.textContent = chunk;
-                outputContainer.appendChild(paragraph);
-            });
+            if (chunks.length > 0) {
+                const chunkText = document.createElement('p');
+                chunkText.textContent = chunks[currentChunkIndex];
+                outputContainer.appendChild(chunkText);
+
+                const navigationDiv = document.createElement('div');
+                navigationDiv.classList.add('chunk-navigation');
+
+                const prevButton = document.createElement('button');
+                prevButton.textContent = 'Previous';
+                prevButton.disabled = currentChunkIndex === 0;
+                prevButton.onclick = () => {
+                    if (currentChunkIndex > 0) {
+                        currentChunkIndex--;
+                        displayCurrentChunk();
+                    }
+                };
+
+                const copyButton = document.createElement('button');
+                copyButton.textContent = 'Copy Chunk';
+                copyButton.onclick = () => {
+                    copyChunkToClipboard(chunks[currentChunkIndex]);
+                };
+
+                const nextButton = document.createElement('button');
+                nextButton.textContent = 'Next';
+                nextButton.disabled = currentChunkIndex === chunks.length - 1;
+                nextButton.onclick = () => {
+                    if (currentChunkIndex < chunks.length - 1) {
+                        currentChunkIndex++;
+                        displayCurrentChunk();
+                    }
+                };
+
+                const chunkInfo = document.createElement('div');
+                chunkInfo.className = 'chunk-info';
+                chunkInfo.textContent = `Chunk ${currentChunkIndex + 1} of ${chunks.length}`;
+
+                navigationDiv.appendChild(prevButton);
+                navigationDiv.appendChild(copyButton);
+                navigationDiv.appendChild(nextButton);
+
+                outputContainer.appendChild(chunkInfo);
+                outputContainer.appendChild(navigationDiv);
+            }
+        }
+
+        function copyChunkToClipboard(chunk) {
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = chunk;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextarea);
         }
 
         function toggleDarkMode() {
