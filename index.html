@@ -73,14 +73,14 @@
 
         .output-container textarea {
             width: 100%;
-            height: 1500%;
+            height: 150px;
             margin-bottom: 10px;
             padding: 10px;
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 4px;
             background-color: #e8f5e9;
-            overflow-y:  auto;
+            overflow-y: auto;
             resize: none;
         }
 
@@ -147,6 +147,9 @@
                 currentPosition = nextChunkEnd;
             }
 
+            // Log all chunks to the console
+            console.log("All Chunks:", chunks);
+
             if (chunks.length > 0) {
                 currentChunkIndex = 0;
                 displayCurrentChunk();
@@ -159,7 +162,7 @@
 
             if (chunks.length > 0) {
                 const chunkText = document.createElement('textarea');
-                chunkText.readOnly = false;
+                chunkText.readOnly = true;
                 chunkText.value = chunks[currentChunkIndex];
                 chunkText.className = 'output-container-textarea';
 
@@ -180,8 +183,6 @@
                 copyButton.textContent = 'Copy Chunk';
                 copyButton.onclick = () => {
                     copyChunkToClipboard(chunks[currentChunkIndex]);
-                    copyButton.style.backgroundColor = 'yellow';
-                    copyButton.style.color = 'black';
                 };
 
                 const nextButton = document.createElement('button');
@@ -205,6 +206,9 @@
                 outputContainer.appendChild(chunkText);
                 outputContainer.appendChild(chunkInfo);
                 outputContainer.appendChild(navigationDiv);
+
+                // Log the currently displayed chunk to the console
+                console.log(`Displaying Chunk ${currentChunkIndex + 1}:`, chunks[currentChunkIndex]);
             }
         }
 
@@ -215,6 +219,7 @@
             tempTextarea.select();
             document.execCommand('copy');
             document.body.removeChild(tempTextarea);
+            console.log("Copied to Clipboard:", chunk);
         }
 
         function toggleDarkMode() {
