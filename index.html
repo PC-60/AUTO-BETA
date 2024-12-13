@@ -159,7 +159,7 @@
 
             if (chunks.length > 0) {
                 const chunkText = document.createElement('textarea');
-                chunkText.readOnly = true;
+                chunkText.readOnly = false;
                 chunkText.value = chunks[currentChunkIndex];
                 chunkText.className = 'output-container-textarea';
 
