@@ -76,7 +76,7 @@
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            background-color:  #080808;
+            background-color: #080808;
             margin-bottom: 10px;
             white-space: pre-wrap;
         }
@@ -98,16 +98,10 @@
             cursor: pointer;
         }
 
-        .chunk-navigation button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-
         .chunk-info {
             font-weight: bold;
             text-align: center;
             margin-top: 10px;
-            
         }
 
         .dark-mode-toggle {
@@ -179,39 +173,40 @@
                 const navigationDiv = document.createElement('div');
                 navigationDiv.classList.add('chunk-navigation');
 
-                const prevButton = document.createElement('button');
-                prevButton.textContent = 'Previous';
-                prevButton.disabled = currentChunkIndex === 0;
-                prevButton.onclick = () => {
-                    if (currentChunkIndex > 0) {
-                        currentChunkIndex--;
-                        displayCurrentChunk();
-                    }
-                };
+                if (currentChunkIndex > 0) {
+                    const prevButton = document.createElement('button');
+                    prevButton.textContent = 'Previous';
+                    prevButton.onclick = () => {
+                        if (currentChunkIndex > 0) {
+                            currentChunkIndex--;
+                            displayCurrentChunk();
+                        }
+                    };
+                    navigationDiv.appendChild(prevButton);
+                }
 
                 const copyButton = document.createElement('button');
                 copyButton.textContent = 'Copy Chunk';
                 copyButton.onclick = () => {
                     copyChunkToClipboard(chunks[currentChunkIndex]);
                 };
+                navigationDiv.appendChild(copyButton);
 
-                const nextButton = document.createElement('button');
-                nextButton.textContent = 'Next';
-                nextButton.disabled = currentChunkIndex === chunks.length - 1;
-                nextButton.onclick = () => {
-                    if (currentChunkIndex < chunks.length - 1) {
-                        currentChunkIndex++;
-                        displayCurrentChunk();
-                    }
-                };
+                if (currentChunkIndex < chunks.length - 1) {
+                    const nextButton = document.createElement('button');
+                    nextButton.textContent = 'Next';
+                    nextButton.onclick = () => {
+                        if (currentChunkIndex < chunks.length - 1) {
+                            currentChunkIndex++;
+                            displayCurrentChunk();
+                        }
+                    };
+                    navigationDiv.appendChild(nextButton);
+                }
 
                 const chunkInfo = document.createElement('div');
                 chunkInfo.className = 'chunk-info';
                 chunkInfo.textContent = `Chunk ${currentChunkIndex + 1} of ${chunks.length}`;
-
-                navigationDiv.appendChild(prevButton);
-                navigationDiv.appendChild(copyButton);
-                navigationDiv.appendChild(nextButton);
 
                 outputContainer.appendChild(chunkInfo);
                 outputContainer.appendChild(navigationDiv);
