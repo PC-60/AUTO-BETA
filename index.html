@@ -173,17 +173,16 @@
                 const navigationDiv = document.createElement('div');
                 navigationDiv.classList.add('chunk-navigation');
 
-                if (currentChunkIndex > 0) {
-                    const prevButton = document.createElement('button');
-                    prevButton.textContent = 'Previous';
-                    prevButton.onclick = () => {
-                        if (currentChunkIndex > 0) {
-                            currentChunkIndex--;
-                            displayCurrentChunk();
-                        }
-                    };
-                    navigationDiv.appendChild(prevButton);
-                }
+                const prevButton = document.createElement('button');
+                prevButton.textContent = 'Previous';
+                prevButton.disabled = currentChunkIndex === 0;
+                prevButton.onclick = () => {
+                    if (currentChunkIndex > 0) {
+                        currentChunkIndex--;
+                        displayCurrentChunk();
+                    }
+                };
+                navigationDiv.appendChild(prevButton);
 
                 const copyButton = document.createElement('button');
                 copyButton.textContent = 'Copy Chunk';
