@@ -1026,7 +1026,7 @@
 
         function cleanUpText(inputText) {
             inputText = inputText
-                .replace(/[~\[\]\{\}]+/g, ' ') // Remove specified symbols
+                .replace(/[~=\[\]\{\}-]+/g, ' ') // Remove specified symbols
                 .replace(/-{2,}/g, ' ') // Replace multiple dashes with a space
                 .replace(/—{2,}/g, ' ') // Remove multiple em dashes
                 .replace(/\.\.\.+/g, '.') // Replace multiple dots with a single dot
