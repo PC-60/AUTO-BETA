@@ -1029,7 +1029,8 @@
                 .replace(/-{2,}/g, ' ') // Replace multiple dashes with a space
                 .replace(/—{2,}/g, ' ') // Remove multiple em dashes
                 .replace(/\.\.\.+/g, '.') // Replace multiple dots with a single dot
-                .replace(/_{2,}/g, ' ') // Replace multiple underscores with a space
+                .replace(/_{2,}/g, ' ') 
+                 .replace(/\*{2,}/g, ' ') // Replace multiple underscores with a space
                 .replace(/\b\d+\.\s+/g, ' ') 
                 .replace(/\bChapter Text\b/gi, '')// Remove numbered lists like 1. or 2.
                 .replace(/\s+$/gm, '');
