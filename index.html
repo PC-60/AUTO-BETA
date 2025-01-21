@@ -1024,19 +1024,20 @@
         }
 
         function cleanUpText(inputText) {
-            inputText = inputText
-                .replace(/[~=\[\]\{\}]+/g, ' ') // Remove specified symbols
-                .replace(/-{2,}/g, ' ') // Replace multiple dashes with a space
-                .replace(/—{2,}/g, ' ') // Remove multiple em dashes
-                .replace(/\.\.\.+/g, '.') // Replace multiple dots with a single dot
-                .replace(/_{2,}/g, ' ') 
-                 .replace(/\*{2,}/g, ' ') // Replace multiple underscores with a space
-                .replace(/\b\d+\.\s+/g, ' ') 
-                .replace(/\bChapter Text\b/gi, '')// Remove numbered lists like 1. or 2.
-                .replace(/\s+$/gm, '');
-               
-            return inputText;
-        }
+    inputText = inputText
+        .replace(/[~=\[\]\{\}]+/g, ' ')
+        .replace(/-{2,}/g, ' ')
+        .replace(/—{2,}/g, ' ')
+        .replace(/\.\.\.+/g, '.')
+        .replace(/_{2,}/g, ' ')
+        .replace(/\b\d+\.\s+/g, ' ')
+        .replace(/\*{2,}/g, ' ')
+        .replace(/\*+/g, ' ') // Removes continuous sequences of asterisks
+        .replace(/\bChapter Text\b/gi, '')
+        .replace(/\s+$/gm, '');
+
+    return inputText;
+}
 
         function splitTextWithSpacing() {
             let inputText = document.getElementById('inputText').value;
