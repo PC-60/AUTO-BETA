@@ -1022,7 +1022,7 @@
 
         function cleanUpText(inputText) {
     inputText = inputText
-        .replace(/[~=\[\]\{\}]+/g, ' ')
+        .replace(/[~=\[\]\{\}\|\/]+/g, ' ')
         .replace(/-{2,}/g, ' ')
         .replace(/—{2,}/g, ' ')
         .replace(/\.\.\.+/g, '.')
@@ -1031,6 +1031,7 @@
         .replace(/\*{2,}/g, ' ')
         .replace(/\*+/g, ' ') // Removes continuous sequences of asterisks
         .replace(/\bChapter Text\b/gi, '')
+        .replace(/\bI'm sorry, I can't assist with that request.\b/gi, '')
         .replace(/\s+$/gm, '');
 
     return inputText;
