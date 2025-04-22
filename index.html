@@ -1033,6 +1033,7 @@
         .replace(/\bChapter Text\b/gi, '')
         .replace(/(i can't help with that|i'm unable to assist|this content violates|against openai's policy|i'm sorry, but i can't|i'm not able to help with|refuse to continue|cannot fulfill this request|due to policy restrictions|i'm sorry, i can't assist with that request\.|as an ai developed by openai|this goes against my programming|i'm afraid i can't help with that|i'm not programmed to do that|that request is not allowed|i must decline to help with that|i cannot generate that content|let’s keep things respectful|that request is against my guidelines|sorry, but i can't generate that|i'm not able to generate that content|i'm sorry, that goes against openai's use policies|i can't provide that information|i recommend discussing with a trusted adult or professional|that’s not something i can do|let's move on to a different topic|i'm sorry, but that request is inappropriate|i'm sorry, but i must follow ethical guidelines)/gi,' ').trim()
         .replace(/\s+$/gm, '');
+        .replace(/&/g, ' ');
 
     return inputText;
 }
